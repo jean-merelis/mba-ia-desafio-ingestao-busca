@@ -1,3 +1,6 @@
+from langchain.prompts import PromptTemplate
+from store import get_vector_store
+
 PROMPT_TEMPLATE = """
 CONTEXTO:
 {contexto}
@@ -25,5 +28,21 @@ PERGUNTA DO USUÁRIO:
 RESPONDA A "PERGUNTA DO USUÁRIO"
 """
 
-def search_prompt(question=None):
-    pass
+
+def search_prompt(collection_name, model, question):
+    template = PromptTemplate(
+        input_variables=["contexto", "pergunta"],
+        template=PROMPT_TEMPLATE
+    )
+    store = get_vector_store(collection_name)
+    search_result = store.similarity_search_with_score(question, k=10)
+
+    if not search_result:
+        return "Não tenho informações necessárias para responder sua pergunta. Nenhum documento encontrado"
+
+    context = "\n\n".join([doc.page_content for doc, score in search_result])
+
+    prompt = template.format(pergunta=question, contexto=context)
+
+    response = model.invoke(prompt)
+    return response.content
