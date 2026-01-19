@@ -82,7 +82,7 @@ GOOGLE_API_KEY=sua_chave_aqui
 # OPENAI_API_KEY=sua_chave_aqui
 
 # Database
-DATABASE_URL=postgresql://user:password@localhost:5432/rag_db
+DATABASE_URL='postgresql+psycopg2://postgres:postgres@localhost:5432/rag'
 
 # Configurações opcionais
 COLLECTION_NAME=document_vectors
